@@ -1,1 +1,173 @@
-local v0=loadstring(game:HttpGet("https://raw.githubusercontent.com/vFishyTurtle/SN-Lib/main/src"))();local v1=v0:CreateWindow({Title="Sycned Hub"});local v2=game.Players.LocalPlayer;local v3={aimandesp=v1:NewTab({Name="Aimbot And Esp"}),character=v1:NewTab({Name="Player/Character"}),misc=v1:NewTab({Name="Misc"}),credits=v1:NewTab({Name="Credits"})};local v4={aimandesp=v3.aimandesp:NewSection({Name="Aimbot And Esp"}),character=v3.character:NewSection({Name="Player/Character"}),misc=v3.misc:NewSection({Name="Misc"})};local v5={aimbot=v4.aimandesp:NewToggle({Name="Aimbot",default=false,callback=function(v8) local v9=v8;if v9 then local function v32() local v35=nil;local v36=math.huge;for v39,v40 in pairs(game:GetService("Players"):GetPlayers()) do if ((v40~=game:GetService("Players").LocalPlayer) and v40.Character and v40.Character:FindFirstChild("Head")) then local v44=(v40.Character.Head.Position-game:GetService("Players").LocalPlayer.Character.Head.Position).magnitude;if (v44<v36) then v35=v40;v36=v44;end end end return v35;end game:GetService("UserInputService").InputBegan:Connect(function(v37,v38) if ( not v38 and (v37.KeyCode==Enum.KeyCode.Q)) then v9= not v9;if v9 then print("Aimbot Enabled");else print("Aimbot Disabled");end end end);game:GetService("RunService").RenderStepped:Connect(function() if v9 then local v43=v32();if (v43 and v43.Character and v43.Character:FindFirstChild("Head")) then game.Workspace.CurrentCamera.CFrame=CFrame.new(game.Workspace.CurrentCamera.CFrame.Position,v43.Character.Head.Position);end end end);end end}),esp=v4.aimandesp:NewToggle({Name="ESP",default=false,callback=function(v10) espEnabled=v10;local function v11(v20) local v21=Instance.new("Highlight");v21.Adornee=v20.Character;v21.FillColor=Color3.fromRGB(0,255,0);v21.OutlineColor=Color3.fromRGB(255,255,255);v21.Parent=v20.Character;end local function v12(v27) if (v27~=LocalPlayer) then v27.CharacterAdded:Connect(function() if espEnabled then v11(v27);end end);end end Players.PlayerAdded:Connect(v12);for v28,v29 in pairs(Players:GetPlayers()) do if (v29~=LocalPlayer) then v12(v29);end end for v30,v31 in pairs(Players:GetPlayers()) do if ((v31~=LocalPlayer) and v31.Character) then if espEnabled then v11(v31);elseif v31.Character:FindFirstChildOfClass("Highlight") then v31.Character:FindFirstChildOfClass("Highlight"):Destroy();end end end end})};local v6={ws=v3.character:NewSlider({Name="Walkspeed",default=50,min=0,max=100,callback=function(v13) local v14=game.Players.LocalPlayer;local v15=v14.Character;if v15 then local v33=v15:FindFirstChild("Humanoid");if v33 then v33.WalkSpeed=v13;end end end}),jp=v3.character:NewSlider({Name="Jump Power",default=50,min=0,max=100,callback=function(v16) local v17=game.Players.LocalPlayer;local v18=v17.Character;if v18 then local v34=v18:FindFirstChild("Humanoid");if v34 then v34.JumpPower=v16;end end end})};local v7={v3.credits:NewDropdown({Name="Who Is The Best Developer?",options={"ScriptedBuddy","ScriptedBuddy","ScriptedBuddy"},default="ScriptedBuddy",callback=function(v19) print("I know right, "   .. v19   .. " is just the best" );end})};
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/vFishyTurtle/SN-Lib/main/src"))()
+local lib = Library:CreateWindow({
+    Title = "Sycned Hub"
+})
+
+local plr = game.Players.LocalPlayer
+
+local tabs = {
+    aimandesp = lib:NewTab({
+        Name = "Aimbot And Esp"
+    }),
+    character = lib:NewTab({
+        Name = "Player/Character"
+    }),
+    misc = lib:NewTab({
+        Name = "Misc"
+    }),
+    credits = lib:NewTab({
+        Name = "Credits"
+    })
+}
+
+local sections = {
+    aimandesp = tabs.aimandesp:NewSection({
+        Name = "Aimbot And Esp"
+    }),
+    character = tabs.character:NewSection({
+        Name = "Player/Character"
+    }),
+    misc = tabs.misc:NewSection({
+        Name = "Misc"
+    })
+}
+
+local toggles = {
+    aimbot = sections.aimandesp:NewToggle({
+        Name = "Aimbot",
+        default = false,
+        callback = function(v)
+            local aimbotEnabled = v
+            if aimbotEnabled then
+                local function getClosestPlayer()
+                    local closestPlayer = nil
+                    local shortestDistance = math.huge
+
+                    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+                        if player ~= game:GetService("Players").LocalPlayer and player.Character and
+                            player.Character:FindFirstChild("Head") then
+                            local distance = (player.Character.Head.Position -
+                                                 game:GetService("Players").LocalPlayer.Character.Head.Position).magnitude
+                            if distance < shortestDistance then
+                                closestPlayer = player
+                                shortestDistance = distance
+                            end
+                        end
+                    end
+
+                    return closestPlayer
+                end
+
+                game:GetService("UserInputService").InputBegan:Connect(function(input, processed)
+                    if not processed and input.KeyCode == Enum.KeyCode.Q then
+                        aimbotEnabled = not aimbotEnabled
+                        if aimbotEnabled then
+                            print("Aimbot Enabled")
+                        else
+                            print("Aimbot Disabled")
+                        end
+                    end
+                end)
+
+                game:GetService("RunService").RenderStepped:Connect(function()
+                    if aimbotEnabled then
+                        local target = getClosestPlayer()
+                        if target and target.Character and target.Character:FindFirstChild("Head") then
+                            game.Workspace.CurrentCamera.CFrame = CFrame.new(
+                                game.Workspace.CurrentCamera.CFrame.Position, target.Character.Head.Position)
+                        end
+                    end
+                end)
+            end
+        end
+    }),
+
+    esp = sections.aimandesp:NewToggle({
+        Name = "ESP",
+        default = false,
+        callback = function(v)
+            espEnabled = v
+            local function createESP(player)
+                local highlight = Instance.new("Highlight")
+                highlight.Adornee = player.Character
+                highlight.FillColor = Color3.fromRGB(0, 255, 0) -- Green color for visibility
+                highlight.OutlineColor = Color3.fromRGB(255, 255, 255) -- White outline for better contrast
+                highlight.Parent = player.Character
+            end
+
+            local function onPlayerAdded(player)
+                if player ~= LocalPlayer then
+                    player.CharacterAdded:Connect(function()
+                        if espEnabled then
+                            createESP(player)
+                        end
+                    end)
+                end
+            end
+
+            Players.PlayerAdded:Connect(onPlayerAdded)
+
+            for _, player in pairs(Players:GetPlayers()) do
+                if player ~= LocalPlayer then
+                    onPlayerAdded(player)
+                end
+            end
+
+            for _, player in pairs(Players:GetPlayers()) do
+                if player ~= LocalPlayer and player.Character then
+                    if espEnabled then
+                        createESP(player)
+                    else
+                        if player.Character:FindFirstChildOfClass("Highlight") then
+                            player.Character:FindFirstChildOfClass("Highlight"):Destroy()
+                        end
+                    end
+                end
+            end
+        end
+    })
+}
+
+local sliders = {
+    ws = tabs.character:NewSlider({
+        Name = "Walkspeed",
+        default = 50,
+        min = 0,
+        max = 100,
+        callback = function(v)
+            local plr = game.Players.LocalPlayer
+            local plrchar = plr.Character
+            if plrchar then
+                local plrhum = plrchar:FindFirstChild("Humanoid")
+                if plrhum then
+                    plrhum.WalkSpeed = v
+                end
+            end
+        end
+    }),
+    jp = tabs.character:NewSlider({
+        Name = "Jump Power",
+        default = 50,
+        min = 0,
+        max = 100,
+        callback = function(v)
+            local plr = game.Players.LocalPlayer
+            local plrchar = plr.Character
+            if plrchar then
+                local plrhum = plrchar:FindFirstChild("Humanoid")
+                if plrhum then
+                    plrhum.JumpPower = v
+                end
+            end
+        end
+    })
+}
+
+local dropdowns = {tabs.credits:NewDropdown({
+    Name = "Who Is The Best Developer?",
+    options = {"ScriptedBuddy", "ScriptedBuddy", "ScriptedBuddy"},
+    default = "ScriptedBuddy",
+    callback = function(v)
+        print("I know right, " .. v .. " is just the best")
+    end
+})}
